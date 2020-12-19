@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # Importando o dataset
-df = pd.read_csv("CSVs/fetal_health.csv")
+df = pd.read_csv("../CSVs/fetal_health.csv")
 
 # Entendendo o dataframe
 print(f'{df.head()}\n')
