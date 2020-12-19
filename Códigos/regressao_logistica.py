@@ -1,15 +1,16 @@
+"""
+Este arquivo é a mesma coisa do "pre_processamento", mas com a inclusão do treinamento do modelo e
+da exibição das métricas de avaliação.
+"""
+
 import pandas as pd
 import numpy as np
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# import plotnine
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-# from imblearn.over_sampling import SMOTE
 
-df = pd.read_csv("fetal_health_manipulated.csv")
+df = pd.read_csv("CSVs/fetal_health_manipulated.csv")
 
 print(df.isna().any())
 
@@ -32,19 +33,14 @@ sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
 
-print('\n')
+print('\n')  # Só pra separar o pre-processamento do treinamento no console
 
-"""
-Treinamento
-"""
-
+# Treinando o modelo
 logit = LogisticRegression(verbose=1, max_iter=1000)
 logit.fit(X_train, np.ravel(y_train, order='C'))
 y_pred = logit.predict(X_test)
 
-"""
-Métricas
-"""
+# Métricas
 print(metrics.accuracy_score(y_test, y_pred))
 cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
 print(cnf_matrix)

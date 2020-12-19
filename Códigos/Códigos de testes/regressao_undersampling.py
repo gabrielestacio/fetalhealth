@@ -7,10 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
-from imblearn.over_sampling import SMOTE
-# from imblearn.under_sampling import NearMiss
+# from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import NearMiss
 
-df = pd.read_csv("fetal_health_manipulated.csv")
+df = pd.read_csv("../CSVs/fetal_health_manipulated.csv")
 
 print(df.isna().any())
 
@@ -27,8 +27,8 @@ X = pd.DataFrame(columns=['baseline value', 'accelerations', 'fetal_movement', '
 
 y = pd.DataFrame(columns=['fetal_health'], data=df)
 
-smt = SMOTE()
-X, y = smt.fit_sample(X, y)
+nr = NearMiss()
+X, y = nr.fit_sample(X, y)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
