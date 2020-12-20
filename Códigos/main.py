@@ -17,6 +17,10 @@ print(f'{df.shape}\n')
 print(f'{df.dtypes}\n')
 print(f'{list(df.columns)}\n')
 
+# Removendo coluna com valores praticamente constantes
+print(df['severe_decelerations'].value_counts())
+df.drop('severe_decelerations', axis=1, inplace=True)
+
 # Lidando com dados faltantes
 print(f'{df.isna().any()}\n')
 
@@ -38,10 +42,13 @@ a = sns.heatmap(corr, mask=mask, annot=True, fmt='.2f')
 rotx = a.set_xticklabels(a.get_xticklabels(), rotation=90)
 roty = a.set_yticklabels(a.get_yticklabels(), rotation=30)
 
-# Passando as colunas que serão usadas de entrada no modelo
+# Reunindo colunas com alta correlação
+df.drop(columns=['histogram_mode', 'histogram_median'], axis=1, inplace=True)
+
+# Passando as colunas que serão usadas de entrada no modelo (conjunto de features)
 X = df.drop("fetal_health", axis=1)
 
-# Passando a coluna que será usada de resposta do modelo
+# Passando a coluna que será usada de resposta do modelo (conjunto de labels)
 y = df.fetal_health
 
 # Dividindo os conjuntos de treino e de teste
