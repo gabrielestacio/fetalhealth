@@ -7,11 +7,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
+from math import factorial
+
+
+# Combinação entre o valor resposta e o valor previsto pelo modelo
+def combinacao(n, p):
+    comb = (factorial(n))/(factorial(p)*factorial(abs(n-p)))
+    return comb
+
 
 # Importando o dataset
-espec, f1_scr = [], []
-ssens, sespec, sf1_scr = [], [], []
-df = pd.read_csv("CSVs/fetal_health.csv")
+df = pd.read_csv("../CSVs/fetal_health.csv")
 
 # Entendendo o dataframe
 print(f'{df.head()}\n')
@@ -67,9 +73,9 @@ logit.fit(X_train, np.ravel(y_train, order='C'))
 y_pred = logit.predict(X_test)
 print('\n')
 
-# Métricas
-# print(f'Acurácia:\n{metrics.accuracy_score(y_test, y_pred)}\n')
+# Matriz de confusão 1 - Criando
 cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+print(f'Matriz de confusão:\n{cnf_matrix}\n')
 
 # Acurácia
 '''
@@ -80,10 +86,10 @@ vpos = número de verdadeiros positivos
 
 soma dos verdadeiros dividida pelo 3 da soma de todos os elementos da matriz (3 vezes pois são 3 classes).
 '''
-
 fpos = 0
 vneg = 0
 vpos = 0
+
 for i in range(3):
     for j in range(3):
         fpos += cnf_matrix[j][i]
@@ -91,6 +97,7 @@ for i in range(3):
     vneg += sum(sum(cnf_matrix)) - sum(cnf_matrix[i]) - fpos
     fpos = 0
     vpos += cnf_matrix[i][i]
+
 acc = (vpos + vneg)/(3*sum(sum(cnf_matrix)))
 print(f'Acurácia: {acc}')
 
@@ -101,8 +108,8 @@ ssens = soma de falsos negativos e verdadeiros positivos
 
 verdadeiros positivos divididos pela soma dos verdadeiros positivos e falsos negativos
 '''
-
 sens = []
+
 for i in range(3):
     ssens = sum(cnf_matrix[i])
     sens.append(cnf_matrix[i][i]/ssens)
@@ -116,10 +123,10 @@ vneg = numero de verdadeiros negativos
 
 verdadeiros negativos divididos pela soma de verdadeiros negativos e falsos positivos
 '''
-
 espec = []
 fpos = 0
 vneg = 0
+
 for i in range(3):
     for j in range(3):
         fpos += cnf_matrix[j][i]
@@ -130,6 +137,7 @@ for i in range(3):
     fpos = 0
 
 # Precisão (para medir o f1_score)
+
 '''
 prec = lista com precisão de cada classe
 fpos = numero de falsos positivos
@@ -137,9 +145,9 @@ vpos = numero de verdadeiros positivos
 
 verdadeiros positivos dividido pela soma dos positivos
 '''
-
 prec = []
 fpos = 0
+
 for i in range(3):
     for j in range(3):
         fpos += cnf_matrix[j][i]
@@ -149,14 +157,55 @@ for i in range(3):
     fpos = 0
 
 # f1_score
+
 '''
 dobro do produto da precisão com a sensibilidade divido pela soma da precisão com a sensibilidade
 '''
-
 f1_score = []
+
 for i in range(3):
     f1_score.append((2*prec[i]*sens[i])/(prec[i]+sens[i]))
     print(f'f1_score de {i + 1}: {f1_score[i]}')
 
-# Matriz de confusão
+# Matriz de confusão 2
+'''
+vetor_test = recebe os valores do conjunto de teste como um vetor unidimensional
+pred = lista com quantidade de predições pra cada classe
+test = lista com quantidade de labels pra cada classe
+função 'combinacao' = faz a combinação entre pred e test pra formar a matriz de confusão
+
+tá dando errado. verificar depois.
+'''
+
+vetor_test = y_test.values
+
+pred, test = [0, 0, 0], [0, 0, 0]
+
+for i in range(len(y_pred)):
+    if y_pred[i] == 1:
+        pred[0] += 1
+    elif y_pred[i] == 2:
+        pred[1] += 1
+    elif y_pred[i] == 3:
+        pred[2] += 1
+
+for i in range(len(vetor_test)):
+    if vetor_test[i] == 1:
+        test[0] += 1
+    elif vetor_test[i] == 2:
+        test[1] += 1
+    elif vetor_test[i] == 3:
+        test[2] += 1
+
+confusion_matrix = [[], [], []]
+
+for i in range(3):
+    for j in range(3):
+        confusion_matrix[j].append(combinacao(test[i], pred[j]))
+
+print(confusion_matrix)
+print(test)
+print(pred)
+
+# Matriz de Confusão 1 - Imprimindo
 print(f'Matriz de confusão:\n{cnf_matrix}\n')
