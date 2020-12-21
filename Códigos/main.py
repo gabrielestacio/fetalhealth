@@ -116,7 +116,7 @@ for i in range(3):
     print(f'Especificidade de {i+1}: {espec[i]}')
     fpos = 0
 
-# Precisão (para medir o f1_score)
+# Precisão
 '''
 prec = lista com precisão de cada classe
 fpos = numero de falsos positivos
