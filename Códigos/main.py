@@ -3,14 +3,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn import metrics
 
 # Importando o dataset
-espec, f1_scr = [], []
-ssens, sespec, sf1_scr = [], [], []
 df = pd.read_csv("CSVs/fetal_health.csv")
 
 # Entendendo o dataframe
@@ -45,6 +43,10 @@ rotx = a.set_xticklabels(a.get_xticklabels(), rotation=90)
 roty = a.set_yticklabels(a.get_yticklabels(), rotation=30)
 
 # Reunindo colunas com alta correlação
+"""
+Aqui, na realidade, só excluíremos as colunas de moda e mediana, pois temos a coluna da média ('histogram_mean')
+que exerce o mesmo efeito sobre o modelo.
+"""
 df.drop(columns=['histogram_mode', 'histogram_median'], axis=1, inplace=True)
 
 # Passando as colunas que serão usadas de entrada no modelo (conjunto de features)
@@ -53,7 +55,7 @@ X = df.drop("fetal_health", axis=1)
 # Passando a coluna que será usada de resposta do modelo (conjunto de labels)
 y = df.fetal_health
 
-# Dividindo os conjuntos de treino e de teste
+# Dividindo os conjuntos de treino e de teste - Validação Cruzada por Holdout
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # Normalizando os dados
@@ -65,34 +67,19 @@ X_test = sc_X.transform(X_test)
 logit = LogisticRegression(verbose=1, max_iter=1000)
 logit.fit(X_train, np.ravel(y_train, order='C'))
 y_pred = logit.predict(X_test)
-print('\n')
-
-# Métricas
-# print(f'Acurácia:\n{metrics.accuracy_score(y_test, y_pred)}\n')
-cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
 
 # Acurácia
 '''
-acc = acurácia
-fpos = número de falsos positivos
-vneg = número de verdadeiros negativos
-vpos = número de verdadeiros positivos
-
-soma dos verdadeiros dividida pelo 3 da soma de todos os elementos da matriz (3 vezes pois são 3 classes).
+soma dos positivos dividido pela soma de positivos e negativos
 '''
+print(f'Acurácia:\n{logit.score(X_test, y_test)}\n')
 
-fpos = 0
-vneg = 0
-vpos = 0
-for i in range(3):
-    for j in range(3):
-        fpos += cnf_matrix[j][i]
-    fpos -= cnf_matrix[i][i]
-    vneg += sum(sum(cnf_matrix)) - sum(cnf_matrix[i]) - fpos
-    fpos = 0
-    vpos += cnf_matrix[i][i]
-acc = (vpos + vneg)/(3*sum(sum(cnf_matrix)))
-print(f'Acurácia: {acc}')
+# Matriz de confusão
+'''
+retorna os positivos e negativos de cada classe em formato de matriz
+'''
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+print(f'Matriz de confusão:\n{cnf_matrix}\n')
 
 # Sensibilidade
 '''
@@ -157,6 +144,3 @@ f1_score = []
 for i in range(3):
     f1_score.append((2*prec[i]*sens[i])/(prec[i]+sens[i]))
     print(f'f1_score de {i + 1}: {f1_score[i]}')
-
-# Matriz de confusão
-print(f'Matriz de confusão:\n{cnf_matrix}\n')

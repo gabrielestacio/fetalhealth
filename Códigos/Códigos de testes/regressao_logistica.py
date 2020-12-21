@@ -1,4 +1,6 @@
 """
+ESTE CÓDIGO SERVIU APENAS PARA TESTES. O CÓDIGO FINAL ESTÁ NO ARQUIVO 'main.py'
+
 Este arquivo é a mesma coisa do "pre_processamento", mas com a inclusão do treinamento do modelo e
 da exibição das métricas de avaliação.
 """

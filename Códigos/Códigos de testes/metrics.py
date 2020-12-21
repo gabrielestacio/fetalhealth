@@ -1,3 +1,6 @@
+"""
+ESTE CÓDIGO SERVIU APENAS PARA TESTES. O CÓDIGO FINAL ESTÁ NO ARQUIVO 'main.py'
+"""
 # Importando as bibliotecas e módulos necessários
 import pandas as pd
 import numpy as np
@@ -71,9 +74,10 @@ X_test = sc_X.transform(X_test)
 logit = LogisticRegression(verbose=1, max_iter=1000)
 logit.fit(X_train, np.ravel(y_train, order='C'))
 y_pred = logit.predict(X_test)
+print(logit.score(X_test, y_test))
 print('\n')
 
-# Matriz de confusão 1 - Criando
+# Matriz de confusão
 cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
 print(f'Matriz de confusão:\n{cnf_matrix}\n')
 
@@ -206,6 +210,3 @@ for i in range(3):
 print(confusion_matrix)
 print(test)
 print(pred)
-
-# Matriz de Confusão 1 - Imprimindo
-print(f'Matriz de confusão:\n{cnf_matrix}\n')

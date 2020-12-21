@@ -1,3 +1,6 @@
+"""
+ESTE CÓDIGO SERVIU APENAS PARA TESTES. O CÓDIGO FINAL ESTÁ NO ARQUIVO 'main.py'
+"""
 # Importando as bibliotecas e módulos necessários
 import pandas as pd
 import numpy as np
